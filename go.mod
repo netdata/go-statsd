@@ -1,1 +1,1 @@
-module github.com/kataras/statsd
+module github.com/netdata/statsd
