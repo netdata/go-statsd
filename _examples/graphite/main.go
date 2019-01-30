@@ -9,8 +9,6 @@ import (
 	"github.com/netdata/statsd"
 )
 
-const dev = false
-
 // statusCodeReporter is a compatible `http.ResponseWriter` which stores the `statusCode` for further reporting.
 type statusCodeReporter struct {
 	http.ResponseWriter

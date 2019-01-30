@@ -17,8 +17,9 @@ const (
 	Count  string = "c"
 	Gauge  string = "g"
 	Unique string = "s"
-	Set           = Unique // alias for Unique.
-	Time   string = "ms"
+	// Set is an alias for "Unique"
+	Set         = Unique
+	Time string = "ms"
 )
 
 //
@@ -160,28 +161,6 @@ func (c *Client) FlushEvery(dur time.Duration) {
 	}()
 }
 
-func (c *Client) Flush(n int) error {
-	if len(c.buf) == 0 {
-		return nil
-	}
-
-	if n <= 0 {
-		n = len(c.buf)
-	}
-
-	_, err := c.w.Write(c.buf[:n-1] /* without last "\n" */)
-	if err != nil {
-		return err
-	}
-
-	if n < len(c.buf) {
-		copy(c.buf, c.buf[n:])
-	}
-
-	c.buf = c.buf[:len(c.buf)-n] // or written-1.
-	return nil
-}
-
 func (c *Client) IsClosed() bool {
 	if c == nil {
 		return true
@@ -261,12 +240,26 @@ func (c *Client) WriteMetric(metricName, value, typ string, rate float32) error 
 	return nil
 }
 
-func (c *Client) Record(metricName string, rate float32) func() error {
-	start := time.Now()
-	return func() error {
-		dur := time.Now().Sub(start)
-		return c.WriteMetric(metricName, Duration(dur), Time, rate)
+func (c *Client) Flush(n int) error {
+	if len(c.buf) == 0 {
+		return nil
 	}
+
+	if n <= 0 {
+		n = len(c.buf)
+	}
+
+	_, err := c.w.Write(c.buf[:n-1] /* without last "\n" for udp but on tcp may be required, waiting for feedback */)
+	if err != nil {
+		return err
+	}
+
+	if n < len(c.buf) {
+		copy(c.buf, c.buf[n:])
+	}
+
+	c.buf = c.buf[:len(c.buf)-n] // or written-1.
+	return nil
 }
 
 func (c *Client) Count(metricName string, value int) error {
@@ -287,4 +280,12 @@ func (c *Client) Unique(metricName string, value int) error {
 
 func (c *Client) Time(metricName string, value time.Duration) error {
 	return c.WriteMetric(metricName, Duration(value), Time, 1)
+}
+
+func (c *Client) Record(metricName string, rate float32) func() error {
+	start := time.Now()
+	return func() error {
+		dur := time.Now().Sub(start)
+		return c.WriteMetric(metricName, Duration(dur), Time, rate)
+	}
 }
