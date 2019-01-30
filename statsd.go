@@ -88,8 +88,8 @@ func UDP(addr string) (io.WriteCloser, error) {
 }
 
 // NewClient returns a new StatsD client.
-// The first input argument, "w", should be a value which completes the `io.WriteCloser`
-// interface. It can be a UDP connection or a buffer for testing.
+// The first input argument, "writeCloser", should be a value which completes the `io.WriteCloser`
+// interface. It can be a UDP connection or a string buffer or even the stdout for testing.
 //
 // The second input argument, "prefix" can be empty but it is usually the app's name + '.'.
 //

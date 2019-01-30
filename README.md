@@ -27,9 +27,9 @@ $ go get -u github.com/netdata/statsd
 
 ```go
 // NewClient returns a new StatsD client.
-// The first input argument, "w", should be a value which completes the
+// The first input argument, "writeCloser", should be a value which completes the
 // `io.WriteCloser` interface
-// It can be a UDP connection or a buffer for testing.
+// It can be a UDP connection or a string buffer or even the stdout for testing.
 // The second input argument, "prefix" can be empty
 // but it is usually the app's name and a single dot.
 NewClient(writeCloser io.WriteCloser, prefix string) *Client
@@ -94,7 +94,7 @@ const (
 
 ### Example
 
-Assuming that you have [statsd server](https://github.com/etsy/statsd) running at `:8125` (default port).
+Assuming that you have a [statsd server](https://github.com/etsy/statsd) running at `:8125` (default port).
 
 ```sh
 # assume the following codes in example.go file

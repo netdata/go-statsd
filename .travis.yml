@@ -1,0 +1,16 @@
+language: go
+os:
+  - linux
+go:
+  - 1.11.x
+go_import_path: github.com/netdata/statsd
+install:
+  - go get ./...
+script:
+  - go test -v -cover ./...
+after_script:
+  # examples
+  - cd ./_examples
+  - go get ./...
+  - go test -v -cover ./...
+  - cd ../
