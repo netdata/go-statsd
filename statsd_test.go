@@ -2,6 +2,7 @@ package statsd
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -16,26 +17,39 @@ func (b *ClosingBuffer) Close() error {
 	return nil
 }
 
-func TestClientWriteMetric(t *testing.T) {
+func runTest(tester func(c *Client, w fmt.Stringer)) {
 	w := &ClosingBuffer{new(bytes.Buffer)}
 	client := NewClient(w, "my_prefix.")
 	defer client.Close()
 
-	err := client.WriteMetric("my_metric", Int64(9223372036854775807), Count, 1)
-	if err != nil {
-		t.Fatal(err)
-	}
+	tester(client, w)
+}
 
-	err = client.WriteMetric("my_metric2", Float64(0.4), Gauge, 0.1)
-	if err != nil {
-		t.Fatal(err)
-	}
+func TestClientWriteMetric(t *testing.T) {
+	runTest(func(c *Client, w fmt.Stringer) {
+		err := c.WriteMetric("my_metric", Int64(9223372036854775807), Count, 1)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-	client.Flush(-1)
+		err = c.WriteMetric("my_metric2", Float64(0.4), Gauge, 0.1)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-	if w.String() != "my_prefix.my_metric:9223372036854775807|c\nmy_prefix.my_metric2:0.4|g|@0.1" {
-		t.Fatalf("expected other result: TODO make this test a lot better and easier to read ofc")
-	}
+		err = c.WriteMetric("my_metric3", Float64(-10), Gauge, 1)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		c.Flush(-1)
+
+		if expected, got := "my_prefix.my_metric:9223372036854775807|c\nmy_prefix.my_metric2:0.4|g|@0.1\nmy_prefix.my_metric3:0|g\nmy_prefix.my_metric3:-10|g",
+			w.String(); expected != got {
+			t.Fatalf("expected:\n[%s]\nbut got:\n[%s]", expected, got)
+		}
+	})
+
 }
 
 func TestClientFlushEvery(t *testing.T) {

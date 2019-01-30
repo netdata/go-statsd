@@ -143,9 +143,7 @@ func (c *Client) SetMaxPackageSize(maxPacketSize int) {
 	}
 
 	c.mu.Lock()
-	if len(c.buf) > 0 {
-		c.Flush(-1)
-	}
+	c.flush(-1)
 
 	c.maxPacketSize = maxPacketSize
 	c.buf = make([]byte, 0, maxPacketSize)
@@ -160,9 +158,7 @@ func (c *Client) SetFormatter(fmt func(metricName string) string) {
 	}
 
 	c.mu.Lock()
-	if len(c.buf) > 0 {
-		c.Flush(-1)
-	}
+	c.flush(-1)
 
 	c.metricNameFormatter = fmt
 	c.mu.Unlock()
@@ -184,9 +180,7 @@ func (c *Client) FlushEvery(dur time.Duration) {
 
 	go func() {
 		for range c.flushTicker.C {
-			c.mu.Lock()
 			c.Flush(-1)
-			c.mu.Unlock()
 		}
 	}()
 }
@@ -250,6 +244,13 @@ func appendMetric(dst []byte, prefix, metricName, value, typ string, rate float3
 // and `Client#Record` for common metrics instead.
 func (c *Client) WriteMetric(metricName, value, typ string, rate float32) error {
 	c.mu.Lock()
+	err := c.writeMetric(metricName, value, typ, rate)
+	c.mu.Unlock()
+
+	return err
+}
+
+func (c *Client) writeMetric(metricName, value, typ string, rate float32) error {
 	n := len(c.buf)
 
 	if c.metricNameFormatter != nil {
@@ -257,16 +258,14 @@ func (c *Client) WriteMetric(metricName, value, typ string, rate float32) error 
 	}
 
 	if metricName == "" { // ignore if metric name is empty (after end-dev defined formatter executed).
-		c.mu.Unlock()
 		return nil
 	}
 
 	if typ == Gauge && len(value) > 1 && value[0] == '-' {
 		// we can't explicitly set a gauge to a negative number
 		// without first setting it to zero.
-		err := c.WriteMetric(metricName, "0", Gauge, rate)
+		err := c.writeMetric(metricName, "0", Gauge, rate)
 		if err != nil {
-			c.mu.Unlock()
 			return err
 		}
 	}
@@ -274,14 +273,11 @@ func (c *Client) WriteMetric(metricName, value, typ string, rate float32) error 
 	c.buf = appendMetric(c.buf, c.prefix, metricName, value, typ, rate)
 
 	if len(c.buf) > c.maxPacketSize {
-		err := c.Flush(n)
+		err := c.flush(n)
 		if err != nil {
-			c.mu.Unlock()
 			return err
 		}
 	}
-
-	c.mu.Unlock()
 
 	return nil
 }
@@ -290,6 +286,14 @@ func (c *Client) WriteMetric(metricName, value, typ string, rate float32) error 
 // Negative or zero "n" value will flush everything from the buffer.
 // See `SetMaxPacketSize` too.
 func (c *Client) Flush(n int) error {
+	c.mu.Lock()
+	err := c.flush(n)
+	c.mu.Unlock()
+
+	return err
+}
+
+func (c *Client) flush(n int) error {
 	if len(c.buf) == 0 {
 		return nil
 	}
