@@ -2,7 +2,7 @@
 
 **statsd** is a simple yet powerful, futuristic [StatsD](https://github.com/etsy/statsd) client written in [Go](https://golang.org).
 
-[![build status](https://img.shields.io/travis/netdata/statsd/master.svg?style=flat-square)](https://travis-ci.org/netdata/statsd) [![release](https://img.shields.io/badge/release%20-0.1-0077b3.svg?style=flat-square)](https://github.com/netdata/statsd/releases)
+[![build status](https://img.shields.io/travis/netdata/statsd/master.svg?style=flat-square)](https://travis-ci.org/netdata/statsd) [![report card](https://img.shields.io/badge/report%20card-a%2B-b13333.svg?style=flat-square)](http://goreportcard.com/report/netdata/statsd) [![release](https://img.shields.io/badge/release%20-0.1-0077b3.svg?style=flat-square)](https://github.com/netdata/statsd/releases) 
 
 ## Features
 
@@ -22,6 +22,10 @@ $ go get -u github.com/netdata/statsd
 ```
 
 ## Quick start
+
+I know your time is valuable, so just bear with me another minute.
+
+**statsd** is simple, it won't take more than 10 minutes of your time to read all of its documentation via [godocs](https://godoc.org/github.com/netdata/statsd).
 
 ### API
 

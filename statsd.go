@@ -52,9 +52,9 @@ var (
 	Uint32 = func(v uint32) string { return Uint64(uint64(v)) }
 	// Uint64 accepts an uint64 and returns its string form.
 	Uint64 = func(v uint64) string { return strconv.FormatUint(v, 10) }
-	// Float32 accepts an float32 and returns its string form.
+	// Float32 accepts a float32 and returns its string form.
 	Float32 = func(v float32) string { return Float64(float64(v)) }
-	// Float64 accepts an float64 and returns its string form.
+	// Float64 accepts a float64 and returns its string form.
 	Float64 = func(v float64) string { return strconv.FormatFloat(v, 'f', -1, 64) }
 )
 
@@ -287,6 +287,7 @@ func (c *Client) WriteMetric(metricName, value, typ string, rate float32) error 
 }
 
 // Flush can be called manually, when `FlushEvery` is not configured, to flush the buffered metrics to the statsd server.
+// Negative or zero "n" value will flush everything from the buffer.
 // See `SetMaxPacketSize` too.
 func (c *Client) Flush(n int) error {
 	if len(c.buf) == 0 {
