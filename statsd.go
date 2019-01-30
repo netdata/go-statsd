@@ -231,6 +231,11 @@ func (c *Client) WriteMetric(metricName, value, typ string, rate float32) error 
 		metricName = c.metricNameFormatter(metricName)
 	}
 
+	if metricName == "" { // ignore if metric name is empty (after end-dev defined formatter executed).
+		c.mu.Unlock()
+		return nil
+	}
+
 	if typ == Gauge && len(value) > 1 && value[0] == '-' {
 		// we can't explicitly set a gauge to a negative number
 		// without first setting it to zero.
