@@ -31,10 +31,9 @@ func TestClientWriteMetric(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	client.flush(-1)
+	client.Flush(-1)
 
-	if w.String() != `my_prefix.my_metric:9223372036854775807|c
-my_prefix.my_metric2:0.4|g|@0.1` {
+	if w.String() != "my_prefix.my_metric:9223372036854775807|c\nmy_prefix.my_metric2:0.4|g|@0.1" {
 		t.Fatalf("expected other result: TODO make this test a lot better and easier to read ofc")
 	}
 }
@@ -51,7 +50,7 @@ func TestClientFlushEvery(t *testing.T) {
 	client.FlushEvery(2 * time.Second)
 
 	if w.String() != "" {
-		t.Fatalf("should not flush yet")
+		t.Fatalf("should not Flush yet")
 	}
 
 	time.Sleep(3 * time.Second)
@@ -60,6 +59,9 @@ func TestClientFlushEvery(t *testing.T) {
 		t.Fatalf("expected other result here but got [%s]", got)
 	}
 
+	// test `Client#Flush` should not contain any old data.
+	w.Reset()
+
 	err = client.WriteMetric("my_metric2", Int(2), Count, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -67,7 +69,7 @@ func TestClientFlushEvery(t *testing.T) {
 
 	time.Sleep(3 * time.Second)
 
-	if got := w.String(); got != "my_metric:1|c\nmy_metric2:2|c" {
+	if got := w.String(); got != "my_metric2:2|c" { //
 		t.Fatalf("expected other result here but got [%s]", got)
 	}
 }
@@ -80,7 +82,7 @@ func TestClientRecord(t *testing.T) {
 	stop := client.Record("http.response.time", 1)
 	time.Sleep(1*time.Second + 100*time.Millisecond)
 	stop()
-	client.flush(-1)
+	client.Flush(-1)
 
 	expected := "http.response.time:1100|ms"
 	if got := w.String(); len(got) != len(expected) {
@@ -103,7 +105,7 @@ func TestClientMetricNameFormatter(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	client.flush(-1)
+	client.Flush(-1)
 
 	got := w.String()
 	expected := "http.request.path_visit_me_here:1|c"

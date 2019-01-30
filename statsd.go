@@ -57,7 +57,7 @@ type Client struct {
 
 	buf         []byte
 	mu          sync.Mutex   // mutex for `buf` and `flushTicker`.
-	flushTicker *time.Ticker // it's a variable in order to be re-used so `EveryFlush` can be called to change the flush duration.
+	flushTicker *time.Ticker // it's a variable in order to be re-used so `EveryFlush` can be called to change the Flush duration.
 }
 
 const defaultMaxPacketSize = 1193
@@ -117,7 +117,7 @@ func (c *Client) SetMaxPackageSize(maxPacketSize int) {
 
 	c.mu.Lock()
 	if len(c.buf) > 0 {
-		c.flush(-1)
+		c.Flush(-1)
 	}
 
 	c.maxPacketSize = maxPacketSize
@@ -132,7 +132,7 @@ func (c *Client) SetFormatter(fmt func(metricName string) string) {
 
 	c.mu.Lock()
 	if len(c.buf) > 0 {
-		c.flush(-1)
+		c.Flush(-1)
 	}
 
 	c.metricNameFormatter = fmt
@@ -154,13 +154,13 @@ func (c *Client) FlushEvery(dur time.Duration) {
 	go func() {
 		for range c.flushTicker.C {
 			c.mu.Lock()
-			c.flush(-1)
+			c.Flush(-1)
 			c.mu.Unlock()
 		}
 	}()
 }
 
-func (c *Client) flush(n int) error {
+func (c *Client) Flush(n int) error {
 	if len(c.buf) == 0 {
 		return nil
 	}
@@ -249,7 +249,7 @@ func (c *Client) WriteMetric(metricName, value, typ string, rate float32) error 
 	c.buf = AppendMetric(c.buf, c.prefix, metricName, value, typ, rate)
 
 	if len(c.buf) > c.maxPacketSize {
-		err := c.flush(n)
+		err := c.Flush(n)
 		if err != nil {
 			c.mu.Unlock()
 			return err
