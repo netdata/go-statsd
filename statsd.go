@@ -169,16 +169,16 @@ func (c *Client) flush(n int) error {
 		n = len(c.buf)
 	}
 
-	written, err := c.w.Write(c.buf[:n-1] /* without last "\n" */)
+	_, err := c.w.Write(c.buf[:n-1] /* without last "\n" */)
 	if err != nil {
 		return err
 	}
 
-	if written < len(c.buf) {
-		copy(c.buf, c.buf[written:])
+	if n < len(c.buf) {
+		copy(c.buf, c.buf[n:])
 	}
 
-	c.buf = c.buf[:len(c.buf)-written]
+	c.buf = c.buf[:len(c.buf)-n] // or written-1.
 	return nil
 }
 
