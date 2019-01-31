@@ -48,7 +48,7 @@ func main() {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			path := r.URL.Path
 			if len(path) == 1 {
-				path = "-" // for root.
+				path = "index" // for root.
 			} else if path == "/favicon.ico" {
 				// Some clients like web browsers fires a connection to the $host/favicon.ico automatically,
 				// this is not handled by our file server, we serve favicon from within templates.
@@ -57,8 +57,7 @@ func main() {
 				return
 			} else {
 				path = path[1:] // ignore first slash "/".
-				// replace / with ".",
-				// for example graphite puts them in "subdirectories" automatically.
+				// replace / with ".".
 				path = strings.Replace(path, "/", ".", -1)
 			}
 
