@@ -20,10 +20,15 @@ const (
 	Gauge string = "g"
 	// Unique is the "s" Sets statsd metric type.
 	Unique string = "s"
-	// Set is an alias for "Unique"
+	// Set is an alias for `Unique`.
 	Set = Unique
 	// Time is the "ms" Timing statsd metric type.
 	Time string = "ms"
+	// Histogram is the "h" metric type,
+	// difference from `Time` metric type is that `Time` writes milleseconds.
+	//
+	// Read more at: https://docs.netdata.cloud/collectors/statsd.plugin/
+	Histogram string = "h"
 )
 
 //
@@ -240,8 +245,8 @@ func appendMetric(dst []byte, prefix, metricName, value, typ string, rate float3
 // i.e "c"(statsd.Count),"ms"(statsd.Time),"g"(statsd.Gauge) and "s"(`statsd.Unique`)
 //
 // The "rate" input argument is optional and defaults to 1.
-// Use the `Client#Count`, `Client#Increment`, `Client#Gauge`, `Client#Unique`, `Client#Time`
-// and `Client#Record` for common metrics instead.
+// Use the `Client#Count`, `Client#Increment`, `Client#Gauge`, `Client#Unique`, `Client#Time`,
+// `Client#Record` and `Client#Histogram` for common metrics instead.
 func (c *Client) WriteMetric(metricName, value, typ string, rate float32) error {
 	c.mu.Lock()
 	err := c.writeMetric(metricName, value, typ, rate)
@@ -331,6 +336,8 @@ func (c *Client) Gauge(metricName string, value int) error {
 }
 
 // Unique is a shortcut of `Client#WriteMetric(metricName, statsd.Int(value), statsd.Unique, 1)`.
+//
+// Sampling rate is not supported on sets.
 func (c *Client) Unique(metricName string, value int) error {
 	return c.WriteMetric(metricName, Int(value), Unique, 1)
 }
@@ -353,4 +360,14 @@ func (c *Client) Record(metricName string, rate float32) func() error {
 		dur := time.Now().Sub(start)
 		return c.WriteMetric(metricName, Duration(dur), Time, rate)
 	}
+}
+
+// Histogram writes a histogram metric value,
+// difference from `Time` metric type is that `Time` writes milleseconds.
+//
+// Histogram is a shortcut of `Client#WriteMetric(metricName, value, statsd.Histogram, 1)`.
+//
+// Read more at: https://docs.netdata.cloud/collectors/statsd.plugin/
+func (c *Client) Histogram(metricName string, value int) error {
+	return c.WriteMetric(metricName, Int(value), Histogram, 1)
 }

@@ -6,7 +6,7 @@
 
 ## Features
 
-* Supports *Counting*, *Sampling*, *Timing*, *Gauges* and *Sets* out of the box
+* Supports *Counting*, *Sampling*, *Timing*, *Gauges*, *Sets* and *Histograms* out of the box
 * Futuristic and Extendable: Ability to send custom metric values and types, yet unknown to the current client
 * It is blazing fast and it does not allocate unnecessary memory. Metrics are sent based on a customized packet size, manual `Flushing` of buffered metrics is also an option
 * Beautiful and easy to learn API
@@ -85,12 +85,20 @@ Float64(v float64) string
 
 ```go
 const (
-    Count  string = "c"
-    Gauge  string = "g"
+    // Count is the "c" Counting statsd metric type.
+    Count string = "c"
+    // Gauge is the "g" Gauges statsd metric type.
+    Gauge string = "g"
+    // Unique is the "s" Sets statsd metric type.
     Unique string = "s"
     // Set is an alias for "Unique"
-    Set         = Unique
+    Set = Unique
+    // Time is the "ms" Timing statsd metric type.
     Time string = "ms"
+    // Histogram is the "h" metric type,
+    // difference from `Time` metric type is that `Time` writes milleseconds.
+    // Read more at: https://docs.netdata.cloud/collectors/statsd.plugin/
+    Histogram string = "h"
 )
 ```
 
