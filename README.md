@@ -6,6 +6,7 @@
 
 ## Features
 
+* Best suitable for [netdata](https://github.com/netdata/netdata)
 * Supports *Counting*, *Sampling*, *Timing*, *Gauges*, *Sets* and *Histograms* out of the box
 * Futuristic and Extendable: Ability to send custom metric values and types, yet unknown to the current client
 * It is blazing fast and it does not allocate unnecessary memory. Metrics are sent based on a customized packet size, manual `Flushing` of buffered metrics is also an option
