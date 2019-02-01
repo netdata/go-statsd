@@ -1,6 +1,6 @@
 # StatsD Client (Go)
 
-**statsd** is a simple yet powerful [StatsD](https://github.com/etsy/statsd) client written in [Go](https://golang.org).
+**statsd** is a simple, efficient [StatsD](https://github.com/etsy/statsd) client written in [Go](https://golang.org).
 
 [![build status](https://img.shields.io/travis/netdata/statsd/master.svg?style=flat-square)](https://travis-ci.org/netdata/statsd) [![report card](https://img.shields.io/badge/report%20card-a%2B-b13333.svg?style=flat-square)](http://goreportcard.com/report/netdata/statsd) [![release](https://img.shields.io/badge/release%20-0.1-0077b3.svg?style=flat-square)](https://github.com/netdata/statsd/releases) 
 
