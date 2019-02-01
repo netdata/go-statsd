@@ -2,10 +2,11 @@
 
 **statsd** is a simple yet powerful, futuristic [StatsD](https://github.com/etsy/statsd) client written in [Go](https://golang.org).
 
-[![build status](https://img.shields.io/travis/netdata/statsd/master.svg?style=flat-square)](https://travis-ci.org/netdata/statsd) [![report card](https://img.shields.io/badge/report%20card-a%2B-b13333.svg?style=flat-square)](http://goreportcard.com/report/netdata/statsd) [![release](https://img.shields.io/badge/release%20-0.1-0077b3.svg?style=flat-square)](https://github.com/netdata/statsd/releases) 
+[![build status](https://img.shields.io/travis/netdata/statsd/v0.svg?style=flat-square)](https://travis-ci.org/netdata/statsd) [![report card](https://img.shields.io/badge/report%20card-a%2B-b13333.svg?style=flat-square)](http://goreportcard.com/report/netdata/statsd) [![release](https://img.shields.io/badge/release%20-0.1-0077b3.svg?style=flat-square)](https://github.com/netdata/statsd/releases) 
 
 ## Features
 
+* Best suitable for [netdata](https://github.com/netdata/netdata)
 * Supports *Counting*, *Sampling*, *Timing*, *Gauges*, *Sets* and *Histograms* out of the box
 * Futuristic and Extendable: Ability to send custom metric values and types, yet unknown to the current client
 * It is blazing fast and it does not allocate unnecessary memory. Metrics are sent based on a customized packet size, manual `Flushing` of buffered metrics is also an option
