@@ -1,1 +1,1 @@
-module github.com/netdata/statsd
+module github.com/netdata/go-statsd
