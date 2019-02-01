@@ -61,6 +61,8 @@ Client {
 
     Time(metricName string, value time.Duration) error
     Record(metricName string, rate float32) func() error
+
+    Histogram(metricName string, value int) error
 }
 ```
 
