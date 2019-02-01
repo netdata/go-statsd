@@ -1,18 +1,18 @@
 # StatsD Client (Go)
 
-**statsd** is a simple yet powerful, futuristic [StatsD](https://github.com/etsy/statsd) client written in [Go](https://golang.org).
+**statsd** is a simple yet powerful [StatsD](https://github.com/etsy/statsd) client written in [Go](https://golang.org).
 
 [![build status](https://img.shields.io/travis/netdata/statsd/master.svg?style=flat-square)](https://travis-ci.org/netdata/statsd) [![report card](https://img.shields.io/badge/report%20card-a%2B-b13333.svg?style=flat-square)](http://goreportcard.com/report/netdata/statsd) [![release](https://img.shields.io/badge/release%20-0.1-0077b3.svg?style=flat-square)](https://github.com/netdata/statsd/releases) 
 
 ## Features
 
-* Best suitable for [netdata](https://github.com/netdata/netdata)
+* Works great with [netdata](https://github.com/netdata/netdata)
 * Supports *Counting*, *Sampling*, *Timing*, *Gauges*, *Sets* and *Histograms* out of the box
-* Futuristic and Extendable: Ability to send custom metric values and types, yet unknown to the current client
-* It is blazing fast and it does not allocate unnecessary memory. Metrics are sent based on a customized packet size, manual `Flushing` of buffered metrics is also an option
-* Beautiful and easy to learn API
-* Easy for testing, the `NewClient` function accepts an `io.WriteCloser`, so you use it to test the sent metrics of your application on a development environment 
-* Protocol-unawareness.
+* Extendable: Ability to send custom metric values and types
+* It is blazing fast and does not allocate unnecessary memory. Metrics are sent based on a customized packet size, manual `flushing` of buffered metrics is also an option
+* Beautiful, easy to learn API
+* Easy to test
+* Protocol-agnostic
 
 ## Installation
 
@@ -24,17 +24,15 @@ $ go get -u github.com/netdata/statsd
 
 ## Quick start
 
-I know your time is valuable, so just bear with me another minute.
-
 **statsd** is simple, it won't take more than 10 minutes of your time to read all of its documentation via [godocs](https://godoc.org/github.com/netdata/statsd).
 
 ### API
 
 ```go
 // NewClient returns a new StatsD client.
-// The first input argument, "writeCloser", should be a value which completes the
-// `io.WriteCloser` interface
-// It can be a UDP connection or a string buffer or even the stdout for testing.
+// The first input argument, "writeCloser", should be a value which implements  
+// the `io.WriteCloser` interface.
+// It can be a UDP connection or a string buffer or even STDOUT for testing.
 // The second input argument, "prefix" can be empty
 // but it is usually the app's name and a single dot.
 NewClient(writeCloser io.WriteCloser, prefix string) *Client
@@ -173,17 +171,14 @@ func main() {
                 path = strings.Replace(path, "/", ".", -1)
             }
 
-            // HERE
             statsD.Increment(fmt.Sprintf("%s.request", path))
-            
+
             newResponseWriter := &statusCodeReporter{ResponseWriter: w, statusCode: http.StatusOK}
 
-            // HERE
             stop := statsD.Record(fmt.Sprintf("%s.time", path), 1)
             next.ServeHTTP(newResponseWriter, r)
             stop()
 
-            // HERE
             statsD.Increment(fmt.Sprintf("%s.response.%d", path, newResponseWriter.statusCode))
         })
     }
@@ -195,9 +190,7 @@ func main() {
     })
 
     mux.HandleFunc("/other", func(w http.ResponseWriter, r *http.Request) {
-        // HERE
         statsD.Unique("other.unique", 1)
-
         fmt.Fprintln(w, "Hello from other page")
     })
 

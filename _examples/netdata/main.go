@@ -27,10 +27,8 @@ func (w *statusCodeReporter) WriteHeader(statusCode int) {
 
 func (w *statusCodeReporter) Write(b []byte) (int, error) {
 	// We can't set chage status code after response written (net/http limitation, the default is 200)
-	// Also,
-	// changing the header map after a call to WriteHeader (or
-	// Write) has no effect unless the modified headers are
-	// trailers.
+	// Also, changing the header map after a call to WriteHeader (or Write) has
+	// no effect unless the modified headers are trailers.
 	w.written = true
 	return w.ResponseWriter.Write(b)
 }

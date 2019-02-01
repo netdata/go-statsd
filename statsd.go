@@ -10,20 +10,22 @@ import (
 	"time"
 )
 
-//
-// Types.
-//
 const (
 	// Count is the "c" Counting statsd metric type.
 	Count string = "c"
+
 	// Gauge is the "g" Gauges statsd metric type.
 	Gauge string = "g"
+
 	// Unique is the "s" Sets statsd metric type.
 	Unique string = "s"
+
 	// Set is an alias for `Unique`.
 	Set = Unique
+
 	// Time is the "ms" Timing statsd metric type.
 	Time string = "ms"
+
 	// Histogram is the "h" metric type,
 	// difference from `Time` metric type is that `Time` writes milleseconds.
 	//
@@ -31,34 +33,43 @@ const (
 	Histogram string = "h"
 )
 
-//
-// Values.
-//
 var (
 	// Duration accepts a duration and returns a string of the duration's millesecond.
 	Duration = func(v time.Duration) string { return Int(int(v / time.Millisecond)) }
+
 	// Int accepts an int and returns its string form.
 	Int = func(v int) string { return Int64(int64(v)) }
+
 	// Int8 accepts an int8 and returns its string form.
 	Int8 = func(v int8) string { return Int64(int64(v)) }
+
 	// Int16 accepts an int16 and returns its string form.
 	Int16 = func(v int16) string { return Int64(int64(v)) }
+
 	// Int32 accepts an int32 and returns its string form.
 	Int32 = func(v int32) string { return Int64(int64(v)) }
+
 	// Int64 accepts an int64 and returns its string form.
 	Int64 = func(v int64) string { return strconv.FormatInt(v, 10) }
+
 	// Uint accepts an uint and returns its string form.
 	Uint = func(v uint) string { return Uint64(uint64(v)) }
+
 	// Uint8 accepts an uint8 and returns its string form.
 	Uint8 = func(v uint8) string { return Uint64(uint64(v)) }
+
 	// Uint16 accepts an uint16 and returns its string form.
 	Uint16 = func(v uint16) string { return Uint64(uint64(v)) }
+
 	// Uint32 accepts an uint32 and returns its string form.
 	Uint32 = func(v uint32) string { return Uint64(uint64(v)) }
+
 	// Uint64 accepts an uint64 and returns its string form.
 	Uint64 = func(v uint64) string { return strconv.FormatUint(v, 10) }
+
 	// Float32 accepts a float32 and returns its string form.
 	Float32 = func(v float32) string { return Float64(float64(v)) }
+
 	// Float64 accepts a float64 and returns its string form.
 	Float64 = func(v float64) string { return strconv.FormatFloat(v, 'f', -1, 64) }
 )
