@@ -1,7 +1,6 @@
 # Netdata
 
-First of all you need a running netdata deamon, [netdata](https://github.com/netdata/netdata) comes
-with statsd out of the box. Get it [here](https://docs.netdata.cloud/packaging/installer/).
+First of all you need a running netdata deamon, [netdata](https://github.com/netdata/netdata) comes with statsd out of the box. Get it [here](https://docs.netdata.cloud/packaging/installer/).
 
 Netdata + statsd documentation can be found at: https://docs.netdata.cloud/collectors/statsd.plugin/
 
@@ -11,9 +10,7 @@ If you don't have a running netdata instance you can follow the next section.
 
 Netdata has a docker hub repository available for you: https://hub.docker.com/r/netdata/netdata/.
 
-However, we are starting from zero, so we have a custom `Dockerfile` which copies the
-[./netdata.conf](netdata.conf) to the netdata's configuration path, in order to allow `netdata statsd` 
-to accept UDP packets from the host machine.
+However, we are starting from zero, so we have a custom `Dockerfile` which copies the [./netdata.conf](netdata.conf) to the netdata's configuration path, in order to allow `netdata statsd` to accept UDP packets from the host machine.
 
 ```
 [statsd]
