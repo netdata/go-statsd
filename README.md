@@ -16,7 +16,7 @@
 
 ## Installation
 
-The only requirement is the [Go Programming Language](https://golang.org/dl/)
+The only requirement is the [Go Programming Language](https://golang.org/dl/).
 
 ```sh
 $ go get -u github.com/netdata/statsd
@@ -107,7 +107,7 @@ const (
 
 ### Example
 
-Assuming that you have a [statsd server](https://github.com/etsy/statsd) running at `:8125` (default port).
+Assuming you have a [statsd server](https://github.com/etsy/statsd) running at `:8125` (default port).
 
 ```sh
 # assume the following codes in example.go file
@@ -203,8 +203,8 @@ func main() {
 $ go run example.go
 ```
 
-Navigate [here](_examples) to discover all available examples.
+Navigate [here](_examples) to see more examples.
 
 ## License
 
-StatsD Go Client is licensed under the GNU GENERAL PUBLIC [License](LICENSE).
+The go-statsd library is licensed under the GNU GENERAL PUBLIC [License](LICENSE).
