@@ -202,7 +202,9 @@ func (c *Client) Close() error {
 		atomic.StoreUint32(&c.closed, 1)
 
 		c.mu.Lock()
-		c.flushTicker.Stop()
+		if c.flushTicker != nil {
+			c.flushTicker.Stop()
+		}
 		c.flush(-1)
 		c.mu.Unlock()
 
