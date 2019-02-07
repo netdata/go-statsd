@@ -199,8 +199,15 @@ func (c *Client) IsClosed() bool {
 // Close terminates the client,  before closing it will try to write any pending metrics.
 func (c *Client) Close() error {
 	if c != nil && c.w != nil {
-		c.Flush(-1)
 		atomic.StoreUint32(&c.closed, 1)
+
+		c.mu.Lock()
+		if c.flushTicker != nil {
+			c.flushTicker.Stop()
+		}
+		c.flush(-1)
+		c.mu.Unlock()
+
 		return c.w.Close()
 	}
 
