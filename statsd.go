@@ -351,6 +351,11 @@ func (c *Client) Gauge(metricName string, value int) error {
 	return c.WriteMetric(metricName, Int(value), Gauge, 1)
 }
 
+// GaugeFloat64 is a shortcut of `Client#WriteMetric(metricName, statsd.Float64(value), statsd.Gauge, 1)`.
+func (c *Client) GaugeFloat64(metricName string, value float64) error {
+	return c.WriteMetric(metricName, Float64(value), Gauge, 1)
+}
+
 // Unique is a shortcut of `Client#WriteMetric(metricName, statsd.Int(value), statsd.Unique, 1)`.
 //
 // Sampling rate is not supported on sets.
