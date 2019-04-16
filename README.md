@@ -207,4 +207,4 @@ Navigate [here](_examples) to see more examples.
 
 ## License
 
-The go-statsd library is licensed under the GNU GENERAL PUBLIC [License](LICENSE).
+The go-statsd library is licensed under the MIT [License](LICENSE).
